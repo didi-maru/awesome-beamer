@@ -486,35 +486,13 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
 	\endvisibleenv%
 }
 
-\newcommand\awesome@ensurehelper[3]{%
-	\expandafter\def\csname @#1\endcsname{#3}%
-	\if\isempty{#2}%
-		\expandafter\def\csname @short#1\endcsname{#3}%
-	\else%
-		\expandafter\def\csname @short#1\endcsname{#2}%
-	\fi%
-}
-\newcommand\ensureinfocommand[1]{%
-	\ifcsname#1\endcsname%
-		\expandafter\renewcommand\csname#1\endcsname[2][]{\awesome@ensurehelper{#1}{##1}{##2}}%
-	\else%
-		\expandafter\newcommand\csname#1\endcsname[2][]{\awesome@ensurehelper{#1}{##1}{##2}}%
-	\fi%
-}
-
-\ensureinfocommand{title}
-\ensureinfocommand{author}
-\ensureinfocommand{background}
-\ensureinfocommand{email}
-\ensureinfocommand{uni}
-\ensureinfocommand{location}
 \def\inserttitle{\ifdefined\@title\@title\fi}
 \def\insertshorttitle{\ifdefined\@shorttitle\@shorttitle\fi}
 \def\insertauthor{\ifdefined\@author\@author\fi}
 \def\insertshortauthor{\ifdefined\@shortauthor\@shortauthor\fi}
 \def\insertemail{\ifdefined\@email\href{mailto:\@email}{\@email}\fi}
-\def\insertuni{\ifdefined\@uni\@uni\fi}
-\def\insertlocation{\ifdefined\@location\@location\fi}
+% \def\insertuni{\ifdefined\@uni\@uni\fi}
+% \def\insertlocation{\ifdefined\@location\@location\fi}
 
 \tikzfading[
 	name=title page picture fading,
