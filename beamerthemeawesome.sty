@@ -548,6 +548,17 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
         % % \insertuni~\\
         \insertdate
     \end{minipage}
+
+    \ifdefined\titlegraphic
+        \begin{tikzpicture}[remember picture, overlay]
+            \node[
+                anchor=north east,
+                inner sep=0, outer sep=0,
+                xshift=-0.1\paperheight, yshift=-0.1\paperheight
+            ] at (current page.north east) {\inserttitlegraphic};
+        \end{tikzpicture}
+    \fi
+
 }
 %\end{wide}}
 
