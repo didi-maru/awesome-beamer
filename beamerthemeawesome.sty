@@ -486,6 +486,22 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
 	\endvisibleenv%
 }
 
+\newcommand\awesome@ensurehelper[3]{%
+	\expandafter\def\csname @#1\endcsname{#3}%
+	\if\isempty{#2}%
+		\expandafter\def\csname @short#1\endcsname{#3}%
+	\else%
+		\expandafter\def\csname @short#1\endcsname{#2}%
+	\fi%
+}
+\newcommand\ensureinfocommand[1]{%
+	\ifcsname#1\endcsname%
+		\expandafter\renewcommand\csname#1\endcsname[2][]{\smile@ensurehelper{#1}{##1}{##2}}%
+	\else%
+		\expandafter\newcommand\csname#1\endcsname[2][]{\smile@ensurehelper{#1}{##1}{##2}}%
+	\fi%
+}
+
 \ensureinfocommand{title}
 \ensureinfocommand{author}
 \ensureinfocommand{background}
