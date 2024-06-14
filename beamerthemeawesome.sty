@@ -1,45 +1,114 @@
-\ProvidesPackage{awesome-beamer-theme}[]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Awesome-Beamer Theme by Lukas Pietzschmann          %
+%  - Modified by Adrien Martinez                      %
+%                                                     %
+% https://github.com/LukasPietzschmann/awesome-beamer %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\ProvidesPackage{beamerthemeawesome}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \RequirePackage{kvoptions}
 \SetupKeyvalOptions{family=awesome,prefix=awesome@}
 
-\newif\ifawesome@english@
-\DeclareVoidOption{english}{\awesome@english@true}
-\DeclareVoidOption{german}{\awesome@english@false}
-
 \DeclareBoolOption{notoc}
 \DeclareBoolOption{secslide}
 \DeclareBoolOption{subsecslide}
-\DeclareBoolOption{nonumbersinframetitle}
-
-\DeclareDefaultOption{\PassOptionsToPackage{\CurrentOption}{smile}}
+\DeclareBoolOption{refslide}
+\DeclareBoolOption{endslide}
 
 \ProcessKeyvalOptions*
 
-\ifawesome@english@\RequirePackage[english]{babel}\else\RequirePackage[ngerman]{babel}\fi
-
+\DeclareStringOption[blue]{coloraccent}
+\DeclareStringOption[Thanks for your attention!]{endmessage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\RequirePackage{tikz}
+
+\usetikzlibrary{
+	arrows, arrows.meta,
+	automata,
+	backgrounds,
+	bending,
+	calc,
+	fadings,
+	fit,
+	positioning,
+	shapes, shapes.arrows, shapes.geometric,
+	overlay-beamer-styles, decorations.markings
+}
+
+\tikzstyle{every picture}+=[remember picture]
+
+\tikzstyle{inline} = [shape=rectangle,inner sep=\z@,text depth=\z@]
+\tikzstyle{squarenode} = [rectangle, fill=white, draw=black, line width=0.6pt]
+\tikzstyle{roundednode} = [squarenode, rounded corners=\awsome@rounding]
+\tikzstyle{roundnode} = [squarenode, circle]
+\tikzstyle{pill} = [squarenode, rounded rectangle]
+\tikzstyle{arrow} = [line width=\awsome@linewidth,->,>=latex]
+\tikzstyle{doublearrow} = [arrow,<->]
+\tikzstyle{textarrow} = [darkgray,shorten >=1mm,shorten <=1mm,line width=\awsome@linewidth,->,-{Kite[open]}]
+\tikzstyle{short/.style={shorten >=#1, shorten <=#1}}
+\tikzstyle{thickarrow} = [
+line width=\awsome@linewidth
+decoration={markings, mark=at position 1 with {\arrow[scale=2]{open triangle 60}}},
+double distance=5pt,
+shorten >= 13pt,
+preaction = {decorate},
+postaction = {draw, line width=5pt, white, shorten >= 7pt}
+]
+% https://tex.stackexchange.com/a/321615/286979
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{red}{HTML}{a51d2d}
+\definecolor{green}{HTML}{26a269}
+\definecolor{blue}{HTML}{1a5fb4}
+\definecolor{cyan}{HTML}{25a8ff}
+\definecolor{magenta}{HTML}{de3198}
+\definecolor{yellow}{HTML}{f5c211}
+\definecolor{black}{HTML}{241f31}
+\definecolor{gray}{HTML}{c0bfbc}
+\definecolor{darkgray}{HTML}{77767b}
+\definecolor{lightgray}{HTML}{deddda}
+\definecolor{white}{HTML}{ffffff}
+\definecolor{brown}{HTML}{986a44}
+\definecolor{lime}{HTML}{9bcf00}
+\definecolor{olive}{HTML}{aba100}
+\definecolor{orange}{HTML}{ff7800}
+\definecolor{purple}{HTML}{c061cb}
+\definecolor{violet}{HTML}{813d9c}
+\definecolor{maroon}{HTML}{63452c}
+\definecolor{darkmaroon}{HTML}{562b41}
+
+\colorlet{accent}{\awesome@coloraccent}
+
+\newcommand\showcolor[1]{\fboxsep1pt\fbox{\colorbox{#1}{\phantom{XX}}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\node@on@layer{\aftergroup\node@@on@layer}
+
+\RequirePackage{appendixnumberbeamer}
+
+\ifawesome@refslide%
+	\RequirePackage{biblatex}
+\else\fi
 
 \RequirePackage{calc}
 \RequirePackage{microtype}
 \RequirePackage{etoolbox}
 \RequirePackage{tcolorbox}
 \tcbuselibrary{skins}
-\RequirePackage[
-	tikz,
-	hyperref,
-	pdftitle={\noexpand\inserttitle},
-	pdfauthor={\noexpand\insertauthor},
-	pdfsubject={\noexpand\inserttitle}
-]{smile}
+\tcbset{beamer hidden/.style={=0}}
 
 \usetikzlibrary{overlay-beamer-styles,decorations.markings}
 \tikzset{
@@ -51,8 +120,8 @@
 	muted on/.style={alt={#1{muted}{}}},
 	unmuted on/.style={alt={#1{}{muted}}},
 	alt/.code args={<#1>#2#3}{%
-		\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}
-	},
+			\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}
+		},
 	modal background/.style={fill=gray,opacity=0.8},
 	modal box/.style={draw=black,rnd,fill=white,lw,shadow,inner sep=3mm,text width=0.66\paperwidth},
 	modal title/.style={roundednode,fill=black,text=white}
@@ -132,11 +201,11 @@
 
 \newcounter{secinc}
 \pretocmd\section{%
-	% At this point, the section command has not yet incremented the section counter, so we need to do this by ourselves
-	\setcounter{secinc}{\thesection + 1}%
-	\refreshcountsinaux%
-	\immediate\write\@auxout{\global\noexpand\@namedef{s@frameatsecstart-\arabic{secinc}}{\insertframenumber}}%
-}{}{}
+  % At this point, the section command has not yet incremented the section counter, so we need to do this by ourselves
+  \setcounter{secinc}{\thesection + 1}%
+  \refreshcountsinaux%
+  \immediate\write\@auxout{\global\noexpand\@namedef{s@frameatsecstart-\arabic{secinc}}{\insertframenumber}}%
+ }{}{}
 
 \newcounter{subsecinc}
 \pretocmd\subsection{%
@@ -234,7 +303,7 @@
 }
 
 \setbeamerfont{frametitle}{
-	size=\LARGE,
+	size=\Large,
 	shape=\bfseries\scshape
 }
 
@@ -262,15 +331,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+\newlength\awsome@linewidth\awsome@linewidth1px
+\newlength\awsome@rounding\awsome@rounding1mm
 \newlength\awesome@sidebarwidth\setlength{\awesome@sidebarwidth}{0.15\paperwidth}
 \newlength\awesome@textmargin\setlength{\awesome@textmargin}{0.05\paperwidth}
+
 \setbeamersize{description width=0.5cm}
 \setbeamersize{sidebar width left=\awesome@sidebarwidth}
 \setbeamersize{sidebar width right=\z@}
 \setbeamersize{text margin left=\awesome@textmargin}
 \setbeamersize{text margin right=\awesome@textmargin}
 
+\usefonttheme[onlymath]{serif} % Serif in path environnements 
+
 \setbeamertemplate{caption}{\insertcaption}
+\setbeamertemplate{caption}[numbered] % Figures and Tables caption numbers
 \setbeamertemplate{blocks}[rounded][shadow=false]
 \setbeamertemplate{itemize item}[circle]
 \setbeamertemplate{itemize subitem}[circle]
@@ -297,83 +372,106 @@
 }
 
 \setbeamertemplate{separator}{%
-	\usebeamercolor{separator}\textcolor{fg}{\rule{.7\textwidth}{\smile@linewidth}}%
+	\usebeamercolor{separator}\textcolor{fg}{\rule{.7\textwidth}{\awsome@linewidth}}%
 }
 
-\setbeamertemplate{frametitle}{%
-	\vspace{1em}\ifawesome@nonumbersinframetitle\ifbool{wideframe}{\hspace{-\awesome@sidebarwidth}}{}\else\hspace{-\awesome@sidebarwidth}\begin{beamercolorbox}[wd=\awesome@sidebarwidth]{frametitle}%
-		\ifx\insertsection\empty\else%
-			\color{accent}\thesection%
-			\ifx\insertsubsection\empty%
-				\ifnum\framespersection>1%
-					.\color{black!25!white}\scalebox{.7}{\theframesinsection}%
-				\fi%
-			\else%
-				.\thesubsection%
-				\ifnum\framespersubsection>1%
-					.\color{black!25!white}\scalebox{.7}{\theframesinsubsection}%
-				\fi%
-			\fi%
-		\fi
-	\end{beamercolorbox}\fi%
-	\begin{beamercolorbox}{frametitle}%
-		\insertframetitle%
-	\end{beamercolorbox}
-	\ifx\insertframesubtitle\empty\else%
-	\begin{beamercolorbox}{framesubtitle}%
-		\ifawesome@nonumbersinframetitle\ifbool{wideframe}{\hspace{-\awesome@sidebarwidth}}{}\fi\usebeamerfont{subtitle}\insertframesubtitle%
-	\end{beamercolorbox}\fi%
+% \setbeamertemplate{frametitle}{%
+%     \vspace{1em}\ifawesome@nonumbersinframetitle\ifbool{wideframe}{\hspace{-\awesome@sidebarwidth}}{}\else\hspace{-\awesome@sidebarwidth}\begin{beamercolorbox}[wd=\awesome@sidebarwidth]{frametitle}%
+%         \ifx\insertsection\empty\else%
+%             \color{accent}\thesection.%
+%             \ifx\insertsubsection\empty%
+%                 \ifnum\framespersection>1%
+%                     \color{black!25!white}\scalebox{.7}{\theframesinsection}%
+%                 \fi%
+%             \else%
+%                 \thesubsection.\color{black!25!white}%
+%                 \ifnum\framespersubsection>1%
+%                     \scalebox{.7}{\theframesinsubsection}%
+%                 \fi%
+%             \fi%
+%         \fi
+%     \end{beamercolorbox}\fi%
+%     \begin{beamercolorbox}{frametitle}%
+%         \insertframetitle%
+%     \end{beamercolorbox}
+%     \ifx\insertframesubtitle\empty\else%
+%         \begin{beamercolorbox}{framesubtitle}%
+%             \ifawesome@nonumbersinframetitle\ifbool{wideframe}{\hspace{-\awesome@sidebarwidth}}{}\fi\usebeamerfont{subtitle}\insertframesubtitle%
+%         \end{beamercolorbox}\fi%
+% }
+
+\setbeamertemplate{frametitle}{
+	\vskip0.5ex\par
+	\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle\par
+	\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle\par
+	\vspace*{-1ex}
+	\usebeamertemplate{separator}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newtcolorbox{beamerbox}[3][]{boxrule=\smile@linewidth,
-IfBlankTF={#3}{toprule=2mm}{title=#3},colback=#2!5!white,colframe=#2!75!black,left=0em,
-lefttitle=4mm, arc=\smile@rounding, enhanced, segmentation engine=path,
-segmentation style={lcr, solid, shorten >=1mm,shorten <=1mm, line width=\smile@linewidth},#1}
+\newtcolorbox{beamerbox}[2]{
+	boxrule=\awsome@linewidth,
+	title=#2,
+	colback=#1!5!white,
+	colframe=#1!75!black,
+	left=0em,
+	lefttitle=1ex,
+	arc=\awsome@rounding,
+	enhanced,
+	segmentation engine=path,
+	segmentation style={
+			solid,
+			shorten >=1mm,
+			shorten <=1mm,
+			line width=\awsome@linewidth
+		}
+}
+
+\newtcolorbox{halfbeamerbox}[3]{
+	boxrule=\awsome@linewidth,
+	title=#3,
+	colback=#2!5!white,
+	colframe=#2!75!black,
+	left=0em,
+	lefttitle=1ex,
+	arc=\awsome@rounding,
+	enhanced,
+	nobeforeafter,
+	width=(\linewidth-0.5cm)/2,
+	equal height group=#1
+	segmentation engine=path,
+	segmentation style={
+			solid,
+			shorten >=1mm,
+			shorten <=1mm,
+			line width=\awsome@linewidth
+		}
+}
 
 \renewenvironment{definition}[1][\empty]{%
 	\begin{beamerbox}{gray}{#1}%
-}{\end{beamerbox}}
+		}{\end{beamerbox}}
 
-\renewenvironment{block}[1][]{%
+\renewenvironment{block}[1]{%
 	\begin{beamerbox}{accent}{#1}%
-}{\end{beamerbox}}
+		}{\end{beamerbox}}
 
-\renewenvironment{examples}[1][]{%
+\newenvironment{halfblock}[2]{%
+	\begin{halfbeamerbox}{#1}{accent}{#2}%
+		}{\end{halfbeamerbox}}
+
+\renewenvironment{examples}[1]{%
 	\begin{beamerbox}{green}{#1}%
-}{\end{beamerbox}}
+		}{\end{beamerbox}}
 
-\renewenvironment{alertblock}[1][]{%
+\newenvironment{halfexamples}[2]{%
+	\begin{halfbeamerbox}{#2}{green}{#2}%
+		}{\end{halfbeamerbox}}
+
+\renewenvironment{alertblock}[1]{%
 	\begin{beamerbox}{red}{#1}%
-}{\end{beamerbox}}
-
-\newenvironment<>{modal}[1][]{%
-	\def\titlename{#1}%
-	\visibleenv#2%
-	\begin{tikzpicture}[o,node distance=0pt]%
-		\fill[modal background] (current page.south west) rectangle (current page.north east);%
-		\node[modal box] at (current page) (MODALCONTENT) \bgroup%
-}{%
-		\egroup;%
-		\if\expandafter\isempty\expandafter{\titlename}\else\node[modal title] at (MODALCONTENT.north) {\titlename};\fi
-	\end{tikzpicture}%
-	\endvisibleenv%
-}
-
-\ensureinfocommand{title}
-\ensureinfocommand{author}
-\ensureinfocommand{background}
-\ensureinfocommand{email}
-\ensureinfocommand{uni}
-\ensureinfocommand{location}
-\def\inserttitle{\ifdefined\@title\@title\fi}
-\def\insertshorttitle{\ifdefined\@shorttitle\@shorttitle\fi}
-\def\insertauthor{\ifdefined\@author\@author\fi}
-\def\insertshortauthor{\ifdefined\@shortauthor\@shortauthor\fi}
-\def\insertemail{\ifdefined\@email\href{mailto:\@email}{\@email}\fi}
-\def\insertuni{\ifdefined\@uni\@uni\fi}
-\def\insertlocation{\ifdefined\@location\@location\fi}
+		}{\end{beamerbox}}
 
 \tikzfading[
 	name=title page picture fading,
@@ -383,79 +481,53 @@ segmentation style={lcr, solid, shorten >=1mm,shorten <=1mm, line width=\smile@l
 
 \def\ps@navigation@titlepage{\setbeamertemplate{footline}{}\@nameuse{ps@navigation}}
 
-\newlength\lhswidth\setlength{\lhswidth}{.55\textwidth}
+\newlength\lhswidth\setlength{\lhswidth}{.75\textwidth}
 \newlength\titlewidth
 \newlength\subtitlewidth
 \newlength\maxwidth
 \setbeamertemplate{title page}{\begin{wide}
-	\def\titlecontent{\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}%
-	\def\subtitlecontent{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}%
-	\settowidth\titlewidth\titlecontent%
-	\settowidth\subtitlewidth\subtitlecontent%
-	\setlength\maxwidth{\ifdim\titlewidth>\subtitlewidth\titlewidth\else\subtitlewidth\fi}%
-	\thispagestyle{navigation@titlepage}%
-	\begin{minipage}{\lhswidth}
-		\raggedright%
-		\titlecontent\\
-		\subtitlecontent\\
-		\textcolor{accent}{\rule{\ifdim\maxwidth<\lhswidth\maxwidth\else\lhswidth\fi}{\smile@linewidth}}\\[2em]
-		\usebeamerfont{author}\usebeamercolor[fg]{author}%
-		\insertauthor\\
-		\usebeamerfont{details}\usebeamercolor[fg]{details}%
-		\insertemail\\[2em]
-		\usebeamerfont{details}\usebeamercolor[fg]{details}%
-		\insertinstitute\\
-		\insertuni\\[2em]
-		\insertdate
-	\end{minipage}
-
-	\ifdefined\@background
-		\begin{tikzpicture}[remember picture, overlay]
-			\clip (current page.south east)
-				-- (current page.north east)
-				-- ++(-5.1, 0)
-				-- ++(-3, -\paperheight)
-				-- cycle;
-
-			\node[
-				anchor=south east,
-				inner sep=0,
-				outer sep=0
-			] at (current page.south east) {
-				\includegraphics[height=\paperheight]{\@background}
-			};
-
-			\fill[
-				black, path fading=title page picture fading,
-				fading angle=-15
-			]
-			(current page.south east)
-			rectangle
-			++(-10, \dimexpr\paperheight+1cm);
-		\end{tikzpicture}
-	\fi
-\end{wide}}
+		\def\titlecontent{\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}%
+		\def\subtitlecontent{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}%
+		\settowidth\titlewidth\titlecontent%
+		\settowidth\subtitlewidth\subtitlecontent%
+		\setlength\maxwidth{\ifdim\titlewidth>\subtitlewidth\titlewidth\else\subtitlewidth\fi}%
+		\thispagestyle{navigation@titlepage}%
+		\begin{minipage}{\lhswidth}
+			\raggedright%
+			\titlecontent~\\
+			\subtitlecontent~\\
+			\textcolor{accent}{\rule{\ifdim\maxwidth<\lhswidth\maxwidth\else\lhswidth\fi}{\awsome@linewidth}}\\[2em]
+			\usebeamerfont{author}\usebeamercolor[fg]{author}%
+			\insertauthor~\\
+			\usebeamerfont{details}\usebeamercolor[fg]{details}%
+			\insertemail\\[2em]
+			\usebeamerfont{details}\usebeamercolor[fg]{details}%
+			\insertinstitute~\\
+			% % \insertuni\\[2em]
+			\insertdate
+		\end{minipage}
+	\end{wide}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newlength\maxfooterwd\maxfooterwd=0pt
 \def\updatemaxfooterwd#1{\ifdim#1>\maxfooterwd%
-	\global\maxfooterwd=#1%
-	\immediate\write\@auxout{\global\maxfooterwd=\the#1}%
-\fi}
+		\global\maxfooterwd=#1%
+		\immediate\write\@auxout{\global\maxfooterwd=\the#1}%
+	\fi}
 % Make sure we always put the current max footer width into the aux file
 \AtEndDocument{\immediate\write\@auxout{\global\maxfooterwd=\the\maxfooterwd}}
 \newsavebox\footerright
 \def\setfooter#1#2#3{\savebox\footerright{\color{white}\hspace{0.3cm}#3\hspace{0.3cm}}
 	\updatemaxfooterwd{\wd\footerright}\leavevmode\hbox{%
-	\usebeamerfont{footline}%
-	\begin{beamercolorbox}[wd=\dimexpr\textwidth-\maxfooterwd\relax,ht=2.5ex,dp=1ex]{footline}%
-		\hspace{0.3cm}#1\hfill#2\hfill\null%
-	\end{beamercolorbox}%
-	\begin{beamercolorbox}[wd=\maxfooterwd,ht=2.5ex,dp=1ex]{footlineright}%
-		\centerline{\usebox\footerright}%
-	\end{beamercolorbox}%
-}}
+		\usebeamerfont{footline}%
+		\begin{beamercolorbox}[wd=\dimexpr\textwidth-\maxfooterwd\relax,ht=2.5ex,dp=1ex]{footline}%
+			\hspace{0.3cm}#1\hfill#2\hfill\null%
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=\maxfooterwd,ht=2.5ex,dp=1ex]{footlineright}%
+			\centerline{\usebox\footerright}%
+		\end{beamercolorbox}%
+	}}
 
 \def\awesome@smalldot{\tikz[baseline=-.6ex]\node[circle,inner sep=0.16,draw=.,fill=.]{};}
 \def\awesome@fulldot{\tikz[baseline=-.6ex]\node[circle,inner sep=0.32ex,draw=.,fill=.]{};}
@@ -469,29 +541,29 @@ segmentation style={lcr, solid, shorten >=1mm,shorten <=1mm, line width=\smile@l
 			\hspace{.4em}%
 			\ifnum\framespersection>1%
 				\foreach \i in {1, ..., \framespersection}{%
-					\ifnum \i=\theframesinsection%
-						~\awesome@fulldot%
-					\else%
-						\setcounter{pagenumbertolinkto}{\i + \insertsectionstartframe}%
-						~\hyperlink{page:\thepagenumbertolinkto}{\awesome@emptydot}%
-					\fi%
-				}%
+						\ifnum \i=\theframesinsection%
+							~\awesome@fulldot%
+						\else%
+							\setcounter{pagenumbertolinkto}{\i + \insertsectionstartframe}%
+							~\hyperlink{page:\thepagenumbertolinkto}{\awesome@emptydot}%
+						\fi%
+					}%
 			\fi%
 		\else%
 			\hspace{.7em}\awesome@smalldot\hspace{.7em}\insertsubsection%
 			\hspace{.7em}%
 			\ifnum\framespersubsection>1%
 				\foreach \i in {1, ..., \framespersubsection}{%
-					\ifnum \i=\theframesinsubsection%
-						~\awesome@fulldot%
-					\else%
-						\setcounter{pagenumbertolinkto}{\i + \insertsubsectionstartframe}%
-						~\hyperlink{page:\thepagenumbertolinkto}{\awesome@emptydot}%
-					\fi%
-				}%
+						\ifnum \i=\theframesinsubsection%
+							~\awesome@fulldot%
+						\else%
+							\setcounter{pagenumbertolinkto}{\i + \insertsubsectionstartframe}%
+							~\hyperlink{page:\thepagenumbertolinkto}{\awesome@emptydot}%
+						\fi%
+					}%
 			\fi%
 		\fi%
-	}{\ifawesome@english@ Page\else Seite\fi~\insertframenumber~/~\inserttotalframenumber}%
+	}{Page~\insertframenumber~/~\inserttotalframenumber}%
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -505,7 +577,7 @@ segmentation style={lcr, solid, shorten >=1mm,shorten <=1mm, line width=\smile@l
 	\setbeamertemplate{footline}{%
 		\setfooter{\insertshortauthor}%
 		{\hyperlinkdocumentstart{\insertshorttitle}}%
-		{\ifawesome@english@ Section\else Kapitel\fi~\thesection\ifx\insertsubsection\empty\else.\thesubsection\fi}%
+		{Section~\thesection\ifx\insertsubsection\empty\else.\thesubsection\fi}%
 	}%
 	\@nameuse{ps@navigation}%
 }
@@ -527,36 +599,54 @@ segmentation style={lcr, solid, shorten >=1mm,shorten <=1mm, line width=\smile@l
 
 
 \AtBeginSection[]{\ifawesome@secslide
-	\begin{frame}[c,noframenumbering]\thispagestyle{navigation@sec}%
-		\begin{wide}\centering%
-		\usebeamerfont{title}%
-		\usebeamercolor[fg]{section number projected}%
-		\scalebox{1.3}{ \raisebox{-1pt}{\insertsectionnumber}}.~%
-		\usebeamercolor[fg]{title}%
-		\insertsectionhead%
-		\end{wide}%
-	\end{frame}
-\fi}
+		\begin{frame}[c,noframenumbering]\thispagestyle{navigation@sec}%
+			\begin{wide}
+				\centering%
+				\usebeamerfont{title}%
+				\usebeamercolor[fg]{section number projected}%
+				\scalebox{1.3}{ \raisebox{-1pt}{\insertsectionnumber}}.~%
+				\usebeamercolor[fg]{title}%
+				\insertsectionhead%
+			\end{wide}%
+		\end{frame}
+	\fi}
 
 \AtBeginSubsection[]{\ifawesome@subsecslide
-	\begin{frame}[c,noframenumbering]\thispagestyle{navigation@sec}%
-		\begin{wide}\centering%
-		\usebeamerfont{title}%
-		\usebeamercolor[fg]{section number projected}%
-		\scalebox{1.3}{\raisebox{-1pt}{\insertsectionnumber}}.%
-		\usebeamercolor[fg]{subsection number projected}%
-		\textsubscript{\insertsubsectionnumber}~%
-		\usebeamercolor[fg]{title}%
-		\insertsubsectionhead%
-		\end{wide}%
-	\end{frame}
-\fi}
+		\begin{frame}[c,noframenumbering]\thispagestyle{navigation@sec}%
+			\begin{wide}
+				\centering%
+				\usebeamerfont{title}%
+				\usebeamercolor[fg]{section number projected}%
+				\scalebox{1.3}{\raisebox{-1pt}{\insertsectionnumber}}.%
+				\usebeamercolor[fg]{subsection number projected}%
+				\textsubscript{\insertsubsectionnumber}~%
+				\usebeamercolor[fg]{title}%
+				\insertsubsectionhead%
+			\end{wide}%
+		\end{frame}
+	\fi}
 
 \AtEndDocument{
-	{\setbeamercolor{background canvas}{bg=accent}
-	\begin{frame}[b,noframenumbering]\thispagestyle{navigation@titlepage}%
-		\begin{wide}\color{white}%
-			\Large\textbf{\insertauthor}\vskip0.5em\scriptsize\insertlocation,~\insertdate\hfill\insertemail%
-		\end{wide}%
-	\end{frame}}
+	{%
+			\ifawesome@endslide%
+				\setbeamercolor{background canvas}{bg=accent!70!black}%
+				\begin{frame}[noframenumbering]%
+					\thispagestyle{navigation@titlepage}%
+					\color{white}%
+					\hfill%
+					\begin{center}%
+						\huge\textbf{\awesome@endmessage}%
+					\end{center}%
+					\hfill%
+				\end{frame}%
+			\else\fi%
+			\ifawesome@refslide%
+				\setbeamercolor{background canvas}{bg=white}%
+				\setbeamertemplate{footline}{}%    
+				\begin{frame}[noframenumbering,allowframebreaks]%
+					\frametitle{References}%
+					\printbibliography%
+				\end{frame}%
+			\else\fi%
+		}
 }
