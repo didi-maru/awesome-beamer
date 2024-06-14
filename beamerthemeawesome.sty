@@ -333,12 +333,12 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
 
 \newlength\awsome@linewidth\awsome@linewidth1px
 \newlength\awsome@rounding\awsome@rounding1mm
-\newlength\awesome@sidebarwidth\setlength{\awesome@sidebarwidth}{0.15\paperwidth}
+% \newlength\awesome@sidebarwidth\setlength{\awesome@sidebarwidth}{0.15\paperwidth}
 \newlength\awesome@textmargin\setlength{\awesome@textmargin}{0.05\paperwidth}
 
 \setbeamersize{description width=0.5cm}
-\setbeamersize{sidebar width left=\awesome@sidebarwidth}
-\setbeamersize{sidebar width right=\z@}
+% \setbeamersize{sidebar width left=\awesome@sidebarwidth}
+% \setbeamersize{sidebar width right=\z@}
 \setbeamersize{text margin left=\awesome@textmargin}
 \setbeamersize{text margin right=\awesome@textmargin}
 
@@ -521,10 +521,10 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
 			\usebeamerfont{author}\usebeamercolor[fg]{author}%
 			\insertauthor~\\
 			\usebeamerfont{details}\usebeamercolor[fg]{details}%
-			\insertemail\\[2em]
+			\insertemail~\\
 			\usebeamerfont{details}\usebeamercolor[fg]{details}%
 			\insertinstitute~\\
-			% % \insertuni\\[2em]
+			% % \insertuni~\\
 			\insertdate
 		\end{minipage}
 	\end{wide}}
