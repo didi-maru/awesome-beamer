@@ -154,11 +154,11 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
 
 \BeforeBeginEnvironment{tabular}{\def\arraystretch{1.1}}
 
-\providebool{wideframe}
-\define@key{beamerframe}{wide}[true]{
-	\booltrue{wideframe}
-	\begingroup
-}
+% \providebool{wideframe}
+% \define@key{beamerframe}{wide}[true]{
+% 	\booltrue{wideframe}
+% 	\begingroup
+% }
 
 \apptocmd{\beamer@reseteecodes}{%
 	\ifbool{wideframe}{%
@@ -359,9 +359,9 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
 	\usebeamercolor[fg]{normal text}~\inserttocsection%
 }
 
-\newenvironment{wide}{\begingroup\leavevmode%
-	\hspace*{-\awesome@sidebarwidth}\fboxsep\z@\minipage{\linewidth+2cm}%
-}{\endminipage\endgroup}
+% \newenvironment{wide}{\begingroup\leavevmode%
+% 	\hspace*{-\awesome@sidebarwidth}\fboxsep\z@\minipage{\linewidth+2cm}%
+% }{\endminipage\endgroup}
 
 \setbeamertemplate{subsection in toc}{%
 	\mbox{\hskip2em%
@@ -506,28 +506,29 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
 \newlength\titlewidth
 \newlength\subtitlewidth
 \newlength\maxwidth
-\setbeamertemplate{title page}{\begin{wide}
-		\def\titlecontent{\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}%
-		\def\subtitlecontent{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}%
-		\settowidth\titlewidth\titlecontent%
-		\settowidth\subtitlewidth\subtitlecontent%
-		\setlength\maxwidth{\ifdim\titlewidth>\subtitlewidth\titlewidth\else\subtitlewidth\fi}%
-		\thispagestyle{navigation@titlepage}%
-		\begin{minipage}{\lhswidth}
-			\raggedright%
-			\titlecontent~\\
-			\subtitlecontent~\\
-			\textcolor{accent}{\rule{\ifdim\maxwidth<\lhswidth\maxwidth\else\lhswidth\fi}{\awsome@linewidth}}\\[2em]
-			\usebeamerfont{author}\usebeamercolor[fg]{author}%
-			\insertauthor~\\
-			\usebeamerfont{details}\usebeamercolor[fg]{details}%
-			\insertemail~\\
-			\usebeamerfont{details}\usebeamercolor[fg]{details}%
-			\insertinstitute~\\
-			% % \insertuni~\\
-			\insertdate
-		\end{minipage}
-	\end{wide}}
+\setbeamertemplate{title page}{%\begin{wide}
+	\def\titlecontent{\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}%
+	\def\subtitlecontent{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}%
+	\settowidth\titlewidth\titlecontent%
+	\settowidth\subtitlewidth\subtitlecontent%
+	\setlength\maxwidth{\ifdim\titlewidth>\subtitlewidth\titlewidth\else\subtitlewidth\fi}%
+	\thispagestyle{navigation@titlepage}%
+	\begin{minipage}{\lhswidth}
+		\raggedright%
+		\titlecontent~\\
+		\subtitlecontent~\\
+		\textcolor{accent}{\rule{\ifdim\maxwidth<\lhswidth\maxwidth\else\lhswidth\fi}{\awsome@linewidth}}\\[2em]
+		\usebeamerfont{author}\usebeamercolor[fg]{author}%
+		\insertauthor~\\
+		\usebeamerfont{details}\usebeamercolor[fg]{details}%
+		\insertemail~\\
+		\usebeamerfont{details}\usebeamercolor[fg]{details}%
+		\insertinstitute~\\
+		% % \insertuni~\\
+		\insertdate
+	\end{minipage}
+}
+%\end{wide}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -621,29 +622,29 @@ postaction = {draw, line width=5pt, white, shorten >= 7pt}
 
 \AtBeginSection[]{\ifawesome@secslide
 		\begin{frame}[c,noframenumbering]\thispagestyle{navigation@sec}%
-			\begin{wide}
-				\centering%
-				\usebeamerfont{title}%
-				\usebeamercolor[fg]{section number projected}%
-				\scalebox{1.3}{ \raisebox{-1pt}{\insertsectionnumber}}.~%
-				\usebeamercolor[fg]{title}%
-				\insertsectionhead%
-			\end{wide}%
+			% \begin{wide}
+			\centering%
+			\usebeamerfont{title}%
+			\usebeamercolor[fg]{section number projected}%
+			\scalebox{1.3}{ \raisebox{-1pt}{\insertsectionnumber}}.~%
+			\usebeamercolor[fg]{title}%
+			\insertsectionhead%
+			% \end{wide}%
 		\end{frame}
 	\fi}
 
 \AtBeginSubsection[]{\ifawesome@subsecslide
 		\begin{frame}[c,noframenumbering]\thispagestyle{navigation@sec}%
-			\begin{wide}
-				\centering%
-				\usebeamerfont{title}%
-				\usebeamercolor[fg]{section number projected}%
-				\scalebox{1.3}{\raisebox{-1pt}{\insertsectionnumber}}.%
-				\usebeamercolor[fg]{subsection number projected}%
-				\textsubscript{\insertsubsectionnumber}~%
-				\usebeamercolor[fg]{title}%
-				\insertsubsectionhead%
-			\end{wide}%
+			% \begin{wide}
+			\centering%
+			\usebeamerfont{title}%
+			\usebeamercolor[fg]{section number projected}%
+			\scalebox{1.3}{\raisebox{-1pt}{\insertsectionnumber}}.%
+			\usebeamercolor[fg]{subsection number projected}%
+			\textsubscript{\insertsubsectionnumber}~%
+			\usebeamercolor[fg]{title}%
+			\insertsubsectionhead%
+			% \end{wide}%
 		\end{frame}
 	\fi}
 
